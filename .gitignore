@@ -53,3 +53,5 @@ git status# Ignore everything by default
 !ApiNet6/Services/
 !ApiNet6/Services/HarmonizedService.cs
 !ApiNet6/Services/RockitService.cs
+!ApiNet6/dev.scripts/
+!ApiNet6/dev.scripts/script.sql
