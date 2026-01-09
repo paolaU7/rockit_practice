@@ -1,0 +1,55 @@
+# Ignore everything by default
+*
+
+# But do not ignore this .gitignore
+!.gitignore
+
+# Unignore ApiNet6 folder and specific source files only
+!ApiNet6/
+!ApiNet6/Program.cs
+!ApiNet6/Controllers/
+!ApiNet6/Controllers/HarmonizedController.cs
+!ApiNet6/Data/
+!ApiNet6/Data/ApplicationDbContext.cs
+!ApiNet6/Models/
+!ApiNet6/Models/Movement.cs
+!ApiNet6/Models/MovementItem.cs
+!ApiNet6/Models/MovementRequest.cs
+!ApiNet6/Models/PaymentMethod.cs
+!ApiNet6/Models/PaymentType.cs
+!ApiNet6/Models/PaymentTypeEntity.cs
+!ApiNet6/Models/Product.cs
+!ApiNet6/Models/ProductItem.cs
+!ApiNet6/Services/
+!ApiNet6/Services/HarmonizedService.cs
+!ApiNet6/Services/RockitService.cs
+
+# End
+git add .gitignore
+git add ApiNet6/Controllers/
+git add ApiNet6/Data/
+git add ApiNet6/Models/
+git add ApiNet6/Services/
+git status# Ignore everything by default
+*
+# But do not ignore this .gitignore
+!.gitignore
+# Unignore ApiNet6 folder and specific source files only
+!ApiNet6/
+!ApiNet6/Program.cs
+!ApiNet6/Controllers/
+!ApiNet6/Controllers/HarmonizedController.cs
+!ApiNet6/Data/
+!ApiNet6/Data/ApplicationDbContext.cs
+!ApiNet6/Models/
+!ApiNet6/Models/Movement.cs
+!ApiNet6/Models/MovementItem.cs
+!ApiNet6/Models/MovementRequest.cs
+!ApiNet6/Models/PaymentMethod.cs
+!ApiNet6/Models/PaymentType.cs
+!ApiNet6/Models/PaymentTypeEntity.cs
+!ApiNet6/Models/Product.cs
+!ApiNet6/Models/ProductItem.cs
+!ApiNet6/Services/
+!ApiNet6/Services/HarmonizedService.cs
+!ApiNet6/Services/RockitService.cs
