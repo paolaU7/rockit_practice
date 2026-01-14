@@ -25,4 +25,7 @@ public class Movement
     
     [Column("total")]
     public decimal Total { get; set; }
+    public List<MovementItem> MovementItems { get; set; } = new();
+
+    public List<PaymentMethod> PaymentMethods {get ; set;} = new();
 }

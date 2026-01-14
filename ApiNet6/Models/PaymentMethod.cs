@@ -12,9 +12,15 @@ public class PaymentMethod
     
     [Column("movement_id")]
     public int MovementId { get; set; }
+
+    [ForeignKey("MovementId")]
+    public Movement Movement { get; set; } = null!;
     
     [Column("payment_type_id")]
     public int PaymentTypeId { get; set; }
+
+    [ForeignKey("PaymentTypeId")]
+    public PaymentTypeEntity PaymentType { get; set; } = null!;
     
     [Column("amount")]
     public decimal Amount { get; set; }
