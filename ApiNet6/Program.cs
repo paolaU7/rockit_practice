@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ApiNet6.Data;
 using ApiNet6.Services;
 using ApiNet6.Repositories;
+using ApiNet6.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,8 +23,8 @@ builder.Services.AddScoped<ProductService>();
 // Registrar repositorios
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IMovementRepository, MovementRepository>();
-builder.Services.AddScoped<IMovementItemRepository, MovementItemRepository>();
-builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+builder.Services.AddScoped<IRepository<MovementItem>, Repository<MovementItem>>();    
+builder.Services.AddScoped<IRepository<PaymentMethod>, Repository<PaymentMethod>>();  
 
 
 var app = builder.Build();

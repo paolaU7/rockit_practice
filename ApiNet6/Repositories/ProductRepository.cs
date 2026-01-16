@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiNet6.Repositories;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository : Repository<Product>, IProductRepository
+
 {
     private readonly ApplicationDbContext _context;
 
-    public ProductRepository(ApplicationDbContext context)
+    public ProductRepository(ApplicationDbContext context) : base(context)  
     {
         _context = context;
     }
@@ -18,40 +19,6 @@ public class ProductRepository : IProductRepository
         return await _context.Products
             .Where(p => productIds.Contains(p.Id))
             .ToListAsync();
-    }
-
-    public async Task<Product?> GetProductByIdAsync(int id)
-    {
-
-        return await _context.Products.FindAsync(id);
-    }
-
-    public async Task<List<Product>> GetAllProductsAsync()
-    {
-        return await _context.Products.ToListAsync();
-    }
-
-    public async Task<Product> CreateProductAsync(Product product)
-    {
-        _context.Products.Add(product);
-        await _context.SaveChangesAsync();
-        return product;
-    }
-
-    public async Task UpdateProductAsync(Product product)
-    {
-        _context.Products.Update(product);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task DeleteProductAsync (int id)
-    {
-        var product = await _context.Products.FindAsync(id);
-        if (product != null)
-        {
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-        }
     }
 
     public async Task<bool> ProductExistsAsync(int id)

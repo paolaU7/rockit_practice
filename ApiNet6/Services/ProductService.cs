@@ -1,5 +1,6 @@
 using ApiNet6.Models;
 using ApiNet6.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiNet6.Services;
 
@@ -14,56 +15,61 @@ public class ProductService
     
     public async Task<Product?> GetProductByIdAsync(int id)
     {
-        return await _productRepository.GetProductByIdAsync(id);
+        return await _productRepository.GetByIdAsync(id);
     }
 
     public async Task<List<Product>> GetAllProductsAsync()
     {
-        return await _productRepository.GetAllProductsAsync();
+        return await _productRepository.GetAllAsync();
     }
 
-    public async Task<Product> CreateProductAsync (Product product)
+    public async Task<Product> CreateProductAsync(Product product)
     {
         if (string.IsNullOrWhiteSpace(product.Name))
         {
             throw new Exception("El nombre es requerido");
         }
-        else if (product.Price <= 0)
+        if (product.Price <= 0)
         {
             throw new Exception("El precio debe ser mayor a 0");
         }
-        return await _productRepository.CreateProductAsync(product);
+        return await _productRepository.AddAsync(product);
     }
 
     public async Task UpdateProductAsync(int id, Product product) 
-        {
-            if (!await _productRepository.ProductExistsAsync(id)) {
-                throw new Exception("El producto no existe");
-            }
-            product.Id  = id;
-            await _productRepository.UpdateProductAsync(product);
-        }
-    
-    public async Task DeleteProductAsync(int id)
     {
-        if (!await _productRepository.ProductExistsAsync(id)) 
+        if (!await _productRepository.ExistsAsync(id))
         {
             throw new Exception("El producto no existe");
         }
-        await _productRepository.DeleteProductAsync(id);
+        
+        if (string.IsNullOrWhiteSpace(product.Name))
+        {
+            throw new Exception("El nombre es requerido");
+        }
+        if (product.Price <= 0)
+        {
+            throw new Exception("El precio debe ser mayor a 0");
+        }
+        
+        product.Id = id;
+        await _productRepository.UpdateAsync(product);
     }
 
-    public async Task<bool> ProductExistsAsync(int id)
+    public async Task DeleteProductAsync(int id)
     {
-        return await _productRepository.ProductExistsAsync(id);
+        if (!await _productRepository.ExistsAsync(id)) 
+        {
+            throw new Exception("El producto no existe");
+        }
+        
+        try
+        {
+            await _productRepository.DeleteAsync(id);
+        }
+        catch (DbUpdateException)
+        {
+            throw new Exception("No se puede eliminar el producto porque está siendo utilizado en movimientos");
+        }
     }
 }
-
-/*
-- Un método para obtener UN producto por ID (devuelve Product?) - GetProductByIdAsync
-- Un método para obtener TODOS los productos (devuelve List<Product>) - GetAllProductsAsync
-- Un método para agregar un producto (recibe Product, devuelve Product) - CreateProductAsync
-- Un método para actualizar un producto (recibe Product, no devuelve nada - Task) - UpdateProductAsync
-- Un método para eliminar un producto (recibe int id, no devuelve nada - Task) - DeleteProductAsync
-- Un método para verificar si existe un producto (recibe int id, devuelve bool) - ProductExistsAsync
-*/

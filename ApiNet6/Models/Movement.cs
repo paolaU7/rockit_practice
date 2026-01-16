@@ -28,4 +28,18 @@ public class Movement
     public List<MovementItem> MovementItems { get; set; } = new();
 
     public List<PaymentMethod> PaymentMethods {get ; set;} = new();
+
+    public string GetFormattedDate()
+    {
+        return Date.ToString("dd/MM/yyyy");
+    }
+
+}
+
+public static class MovementExtension 
+{
+    public static string GetFormattedDate2(this Movement movement)
+    {
+        return movement.Date.ToString("dd/MM/yyyy");
+    }
 }

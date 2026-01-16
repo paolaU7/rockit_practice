@@ -1,15 +1,14 @@
-
 using ApiNet6.Models;
 using ApiNet6.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiNet6.Repositories;
 
-public class MovementRepository : IMovementRepository
+public class MovementRepository : Repository<Movement>, IMovementRepository
 {
     private readonly ApplicationDbContext _context;
 
-    public MovementRepository(ApplicationDbContext context)
+    public MovementRepository(ApplicationDbContext context) : base(context)
     {
         _context = context;
     }
@@ -22,10 +21,8 @@ public class MovementRepository : IMovementRepository
             .CountAsync();
     }
 
-    public async Task<Movement> AddAsync(Movement movement)
+    Task IMovementRepository.AddAsync(Movement movement)
     {
-        _context.Movements.Add(movement);
-        await _context.SaveChangesAsync();
-        return movement;
+        return AddAsync(movement);
     }
 }

@@ -10,15 +10,16 @@ public class HarmonizedService
     private readonly RockitService _rockit;
     private readonly IProductRepository _productRepository;
     private readonly IMovementRepository _movementRepository;
-    private readonly IMovementItemRepository _movementItemRepository;
-    private readonly IPaymentMethodRepository _paymentMethodRepository;
+    private readonly IRepository<MovementItem> _movementItemRepository;    
+    private readonly IRepository<PaymentMethod> _paymentMethodRepository;  
 
     public HarmonizedService(
         RockitService rockit,
         IProductRepository productRepository,
         IMovementRepository movementRepository,
-        IMovementItemRepository movementItemRepository,
-        IPaymentMethodRepository paymentMethodRepository)
+        IRepository<MovementItem> movementItemRepository,    
+        IRepository<PaymentMethod> paymentMethodRepository      
+    )
     {
         _rockit = rockit;
         _productRepository = productRepository;
@@ -72,7 +73,7 @@ public class HarmonizedService
             Cuit = movementRequest.Cuit,
             Total = total
         };
-        
+
         await _movementRepository.AddAsync(movement);
         
         var movementItems = movementRequest.Products.Select(productItem => 
@@ -87,7 +88,10 @@ public class HarmonizedService
             };
         }).ToList();
         
-        await _movementItemRepository.AddRangeAsync(movementItems);
+        foreach (var item in movementItems)
+        {
+            await _movementItemRepository.AddAsync(item);
+        }
         
         var paymentMethods = movementRequest.Payments.Select(paymentItem => 
             new PaymentMethod
@@ -97,8 +101,10 @@ public class HarmonizedService
                 Amount = paymentItem.Amount
             }).ToList();
         
-        await _paymentMethodRepository.AddRangeAsync(paymentMethods);
-        
+    foreach (var payment in paymentMethods)
+    {
+        await _paymentMethodRepository.AddAsync(payment);
+    }        
         return new
         {
             ticketNumber = ticketNumber,
