@@ -1,6 +1,8 @@
 using ApiNet6.Models;
 using ApiNet6.Data;
 using ApiNet6.Repositories; 
+using ApiNet6.Rules;
+using ApiNet6.Rules.Movement;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiNet6.Services;
@@ -10,27 +12,38 @@ public class HarmonizedService
     private readonly RockitService _rockit;
     private readonly IProductRepository _productRepository;
     private readonly IMovementRepository _movementRepository;
-    private readonly IRepository<MovementItem> _movementItemRepository;    
-    private readonly IRepository<PaymentMethod> _paymentMethodRepository;  
+    private readonly IRepository<MovementItem> _movementItemRepository;
+    private readonly IRepository<PaymentMethod> _paymentMethodRepository;
+    private readonly RuleEngine<MovementRequest> _ruleEngine;
 
     public HarmonizedService(
         RockitService rockit,
         IProductRepository productRepository,
         IMovementRepository movementRepository,
-        IRepository<MovementItem> movementItemRepository,    
-        IRepository<PaymentMethod> paymentMethodRepository      
-    )
+        IRepository<MovementItem> movementItemRepository,
+        IRepository<PaymentMethod> paymentMethodRepository)
     {
         _rockit = rockit;
         _productRepository = productRepository;
         _movementRepository = movementRepository;
         _movementItemRepository = movementItemRepository;
         _paymentMethodRepository = paymentMethodRepository;
+        
+        _ruleEngine = new RuleEngine<MovementRequest>();
+        _ruleEngine.AddRule(new CuitValidRule());
+        _ruleEngine.AddRule(new NameRequiredRule());
     }
 
     public async Task<object> SendStringAsync(string rawData)
     {
         var movementRequest = _rockit.StringToObject(rawData);
+        
+        var validationResult = await _ruleEngine.ValidateAsync(movementRequest);
+        
+        if (!validationResult.IsValid)
+        {
+            throw new Exception(string.Join(", ", validationResult.Errors));
+        }
         
         var productIds = movementRequest.Products.Select(p => p.ProductId).ToList();
         var existingProducts = await _productRepository.GetByIdsAsync(productIds);
@@ -73,7 +86,7 @@ public class HarmonizedService
             Cuit = movementRequest.Cuit,
             Total = total
         };
-
+        
         await _movementRepository.AddAsync(movement);
         
         var movementItems = movementRequest.Products.Select(productItem => 
@@ -101,10 +114,11 @@ public class HarmonizedService
                 Amount = paymentItem.Amount
             }).ToList();
         
-    foreach (var payment in paymentMethods)
-    {
-        await _paymentMethodRepository.AddAsync(payment);
-    }        
+        foreach (var payment in paymentMethods)
+        {
+            await _paymentMethodRepository.AddAsync(payment);
+        }
+        
         return new
         {
             ticketNumber = ticketNumber,

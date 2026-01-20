@@ -21,7 +21,8 @@ public class Movement
     public TimeSpan Time { get; set; }
     
     [Column("cuit")]
-    public long Cuit { get; set; }
+    [MaxLength(11)]
+    public string Cuit { get; set; } = "";
     
     [Column("total")]
     public decimal Total { get; set; }

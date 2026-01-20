@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiNet6.Repositories;
 
-public interface IMovementRepository
+public interface IMovementRepository : IRepository<Movement>
 {
-    Task AddAsync(Movement movement);
     Task<int> GetDistinctTicketCountAsync();
 
 }

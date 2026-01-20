@@ -21,8 +21,4 @@ public class MovementRepository : Repository<Movement>, IMovementRepository
             .CountAsync();
     }
 
-    Task IMovementRepository.AddAsync(Movement movement)
-    {
-        return AddAsync(movement);
-    }
 }

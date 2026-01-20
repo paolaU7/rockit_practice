@@ -12,8 +12,7 @@ public class RockitService
             PropertyNameCaseInsensitive = true
         };
         
-        var jsonString = JsonSerializer.Deserialize<string>(rawData, options);
-        var movement = JsonSerializer.Deserialize<MovementRequest>(jsonString!, options);
+        var movement = JsonSerializer.Deserialize<MovementRequest>(rawData, options);
         
         return movement!;
     }
